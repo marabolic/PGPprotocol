@@ -10,7 +10,7 @@ public class MainForm {
     private JButton importExportButton;
     private JButton showRingButton;
     private JButton sendButton;
-    private JButton recieveButton;
+    private JButton receiveButton;
     public JFrame frame;
 
     public MainForm() {
@@ -37,11 +37,11 @@ public class MainForm {
                 new SendMessageFrom(frame);
             }
         });
-        recieveButton.addActionListener(new ActionListener() {
+        receiveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.setVisible(false);
-                new RecieveMessageForm(frame);
+                new ReceiveMessageForm(frame);
             }
         });
     }
