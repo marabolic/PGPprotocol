@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class RecieveMessageForm {
+public class ReceiveMessageForm {
     private JTextField BrowseTextField;
     private JButton BrowseButton;
     private JLabel RecieveMessageLabel;
@@ -40,7 +40,7 @@ public class RecieveMessageForm {
         });
     }
 
-    RecieveMessageForm(JFrame MainFrame){
+    ReceiveMessageForm(JFrame MainFrame){
         initComponents(MainFrame);
     }
 }
