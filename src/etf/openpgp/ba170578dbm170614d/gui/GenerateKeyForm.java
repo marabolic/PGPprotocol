@@ -15,6 +15,8 @@ public class GenerateKeyForm {
     private JTable KeyTable;
     private JButton deleteKeyButton;
     private JPanel GenerateKeyFormPanel;
+    private JButton BackButton;
+    private JFrame frame;
 
     private static final String regex = "^(.+)@(.+)$";
 
@@ -26,31 +28,46 @@ public class GenerateKeyForm {
         else return false;
     }
 
-    void initComponents(){
-        String [] algrorithms = {"DSA 1024", "DSA 2048", "El Gamal 1024", "El Gamal 2048", "El Gamal 4096"};
-        asymetricAlgorithms = new JComboBox(algrorithms);
+    void initComponents(JFrame MainFrame){
+        frame = new JFrame("Generate Key Form");
+        frame.setContentPane(GenerateKeyFormPanel);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+
+        asymetricAlgorithms.addItem("DSA 1024");
+        asymetricAlgorithms.addItem("DSA 2048");
+        asymetricAlgorithms.addItem("ElGamal 1024");
+        asymetricAlgorithms.addItem("ElGamal 2048");
+        asymetricAlgorithms.addItem("ElGamal 4096");
+
+        asymetricAlgorithms.setSelectedIndex(0);
+
+        frame.setVisible(true);
+
+
 
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(ValidEmail(emailTextField.getText()) && nameTextField.getText() != null){
                     new PasswordForm();
+                }else{
+                    JOptionPane.showMessageDialog(frame, "Something wrong, check your email or name.");
                 }
+            }
+        });
+
+        BackButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                MainFrame.setVisible(true);
             }
         });
     }
 
-    GenerateKeyForm() {
-        initComponents();
-
-
+    GenerateKeyForm(JFrame frame) {
+        initComponents(frame);
     }
-
-
-    public static void main(String[] args) {
-        GenerateKeyForm gk = new GenerateKeyForm();
-
-    }
-
 
 }
