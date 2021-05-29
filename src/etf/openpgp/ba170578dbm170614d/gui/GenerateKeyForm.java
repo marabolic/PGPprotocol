@@ -3,7 +3,6 @@ package etf.openpgp.ba170578dbm170614d.gui;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemListener;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,7 +13,7 @@ public class GenerateKeyForm {
     private JComboBox asymetricAlgorithms;
     private JTable KeyTable;
     private JButton deleteKeyButton;
-    private JPanel GenerateKeyFormPanel;
+    private JPanel generateKeyFormPanel;
     private JButton BackButton;
     private JFrame frame;
 
@@ -30,12 +29,10 @@ public class GenerateKeyForm {
 
     void initComponents(JFrame MainFrame){
         frame = new JFrame("Generate Key Form");
-        frame.setContentPane(GenerateKeyFormPanel);
+        frame.setContentPane(generateKeyFormPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
 
-        asymetricAlgorithms.addItem("DSA 1024");
-        asymetricAlgorithms.addItem("DSA 2048");
         asymetricAlgorithms.addItem("ElGamal 1024");
         asymetricAlgorithms.addItem("ElGamal 2048");
         asymetricAlgorithms.addItem("ElGamal 4096");

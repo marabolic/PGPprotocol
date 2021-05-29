@@ -11,44 +11,42 @@ public class SendMessageFrom {
     private JCheckBox signatureCheckBox;
     private JCheckBox compressionCheckBox;
     private JCheckBox conversionCheckBox;
-    private JPanel SendMessageFormPanel;
-    private JList PublicKeyList;
-    private JComboBox PrivateKeySignatureBox;
-    private JComboBox SymmetricAlgorithmBox;
+    private JPanel sendMessageFormPanel;
+    private JList publicKeyList;
+    private JComboBox privateKeySignatureBox;
+    private JComboBox symmetricAlgorithmBox;
     private JButton sendButton;
-    private JTextArea MessageTextArea;
-    private JButton BackButton;
-    private JPasswordField PasswordField;
+    private JTextArea messageTextArea;
+    private JButton backButton;
     private JFrame frame;
 
     void initComponent(JFrame MainFrame){
         frame = new JFrame("Generate Key Form");
-        frame.setContentPane(SendMessageFormPanel);
+        frame.setContentPane(sendMessageFormPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
 
-        PrivateKeySignatureBox.addItem("Test 1");
-        PrivateKeySignatureBox.addItem("Test 2");
+        privateKeySignatureBox.addItem("Test 1");
+        privateKeySignatureBox.addItem("Test 2");
 
-        PrivateKeySignatureBox.setEnabled(false);
+        privateKeySignatureBox.setEnabled(false);
 
         DefaultListModel listModel = new DefaultListModel();
         listModel.addElement("test 1");
         listModel.addElement("test 2");
         listModel.addElement("test 3");
 
-        PublicKeyList.setModel(listModel);
+        publicKeyList.setModel(listModel);
 
-        PublicKeyList.setEnabled(false);
+        publicKeyList.setEnabled(false);
 
-        SymmetricAlgorithmBox.addItem("3DES + EDE");
-        SymmetricAlgorithmBox.addItem("AES 128 bita");
+        symmetricAlgorithmBox.addItem("3DES + EDE");
+        symmetricAlgorithmBox.addItem("AES 128 bits");
 
-        SymmetricAlgorithmBox.setSelectedIndex(0);
+        symmetricAlgorithmBox.setSelectedIndex(0);
 
-        SymmetricAlgorithmBox.setEnabled(false);
+        symmetricAlgorithmBox.setEnabled(false);
 
-        PasswordField.setEnabled(false);
 
         frame.setVisible(true);
 
@@ -61,7 +59,7 @@ public class SendMessageFrom {
             }
         });
 
-        BackButton.addActionListener(new ActionListener() {
+        backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
@@ -73,11 +71,13 @@ public class SendMessageFrom {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if(signatureCheckBox.isSelected()){
-                    PrivateKeySignatureBox.setEnabled(true);
-                    PasswordField.setEnabled(true);
+                    PasswordForm pf = new PasswordForm();
+                    if (pf.checkPassword()){
+                        privateKeySignatureBox.setEnabled(true);
+                    }
+
                 }else{
-                    PrivateKeySignatureBox.setEnabled(false);
-                    PasswordField.setEnabled(false);
+                    privateKeySignatureBox.setEnabled(false);
                 }
             }
         });
@@ -86,11 +86,11 @@ public class SendMessageFrom {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if(encriptionCheckBox.isSelected()){
-                    SymmetricAlgorithmBox.setEnabled(true);
-                    PublicKeyList.setEnabled(true);
+                    symmetricAlgorithmBox.setEnabled(true);
+                    publicKeyList.setEnabled(true);
                 }else{
-                    SymmetricAlgorithmBox.setEnabled(false);
-                    PublicKeyList.setEnabled(false);
+                    symmetricAlgorithmBox.setEnabled(false);
+                    publicKeyList.setEnabled(false);
                 }
             }
         });
