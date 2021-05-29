@@ -1,23 +1,23 @@
 package etf.openpgp.ba170578dbm170614d.gui;
 
-import sun.applet.Main;
+
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class RecieveMessageForm {
-    private JTextField BrowseTextField;
-    private JButton BrowseButton;
-    private JLabel RecieveMessageLabel;
+    private JTextField browseTextField;
+    private JButton browseButton;
+    private JLabel recieveMessageLabel;
     private JButton decryptionButton;
-    private JPanel RecieveMessageFormPanel;
-    private JButton BackButton;
+    private JPanel recieveMessageFormPanel;
+    private JButton backButton;
     private JFrame frame;
 
     void initComponents(JFrame MainFrame){
         frame = new JFrame("Recieve Message Form");
-        frame.setContentPane(RecieveMessageFormPanel);
+        frame.setContentPane(recieveMessageFormPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
@@ -31,7 +31,7 @@ public class RecieveMessageForm {
             }
         });
 
-        BackButton.addActionListener(new ActionListener() {
+        backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();

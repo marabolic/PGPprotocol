@@ -5,25 +5,24 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class PasswordForm {
-    private JPasswordField PasswordField;
-    private JButton PasswordButton;
-    private JPanel PasswordPanel;
+    private JPasswordField passwordField;
+    private JButton passwordButton;
+    private JPanel passwordPanel;
     private JFrame frame;
 
     private char[] password;
 
     void initComponents(){
         frame = new JFrame("Password");
-        frame.setContentPane(PasswordPanel);
+        frame.setContentPane(passwordPanel);
         frame.pack();
         frame.setVisible(true);
 
-        PasswordButton.addActionListener(new ActionListener() {
+        passwordButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                password = PasswordField.getPassword();
+                password = passwordField.getPassword();
                 if(password.length != 0){
-
                     JOptionPane.showMessageDialog(frame, "Your keys are generated.");
                     frame.dispose();
                 }else{
@@ -37,4 +36,11 @@ public class PasswordForm {
 
         initComponents();
     }
+
+    public boolean checkPassword(){
+        String pass = passwordField.getPassword().toString();
+        //TODO: send to Aurhentication to check
+        return pass == "123";
+    }
+
 }

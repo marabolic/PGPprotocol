@@ -5,8 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MainForm {
-    private JButton GenerateKeyFormButton;
-    private JPanel MainPanel;
+    private JButton generateKeyFormButton;
+    private JPanel mainPanel;
     private JButton importExportButton;
     private JButton showRingButton;
     private JButton sendButton;
@@ -15,14 +15,14 @@ public class MainForm {
 
     public MainForm() {
         frame = new JFrame("PGP");
-        frame.setContentPane(MainPanel);
+        frame.setContentPane(mainPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
 
-        MainPanel.setVisible(true);
+        mainPanel.setVisible(true);
 
-        GenerateKeyFormButton.addActionListener(new ActionListener() {
+        generateKeyFormButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.setVisible(false);
