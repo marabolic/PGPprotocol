@@ -21,12 +21,11 @@ public class PasswordForm {
         passwordButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                password = passwordField.getPassword();
-                if(password.length != 0){
+                if (checkPassword()){
                     JOptionPane.showMessageDialog(frame, "Your keys are generated.");
                     frame.dispose();
                 }else{
-                    JOptionPane.showMessageDialog(frame, "Enter the password please.");
+                    JOptionPane.showMessageDialog(frame, "Wrong password");
                 }
             }
         });
@@ -39,8 +38,17 @@ public class PasswordForm {
 
     public boolean checkPassword(){
         String pass = passwordField.getPassword().toString();
-        //TODO: send to Aurhentication to check
-        return pass == "123";
+        if (password == null){
+            createPassword();
+            return true;
+        }
+
+        boolean equals = pass.equals(password.toString());
+        return equals;
+    }
+
+    public void createPassword(){
+        password = passwordField.getPassword();
     }
 
 }

@@ -1,5 +1,7 @@
 package etf.openpgp.ba170578dbm170614d.gui;
 
+import etf.openpgp.ba170578dbm170614d.pgp.GenerateKeys;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -47,7 +49,9 @@ public class GenerateKeyForm {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(ValidEmail(emailTextField.getText()) && nameTextField.getText() != null){
-                    new PasswordForm();
+                    PasswordForm pf= new PasswordForm();
+                    GenerateKeys generateKeys = new GenerateKeys();
+                    generateKeys.generateKeys();
                 }else{
                     JOptionPane.showMessageDialog(frame, "Something wrong, check your email or name.");
                 }
