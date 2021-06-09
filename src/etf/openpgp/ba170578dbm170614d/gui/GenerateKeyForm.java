@@ -51,7 +51,14 @@ public class GenerateKeyForm {
                 if(ValidEmail(emailTextField.getText()) && nameTextField.getText() != null){
                     PasswordForm pf= new PasswordForm();
                     GenerateKeys generateKeys = new GenerateKeys();
-                    generateKeys.generateKeys();
+                    int selectedIndex = asymetricAlgorithms.getSelectedIndex();
+                    int elgParam = 1024;
+                    switch (selectedIndex){
+                        case 0: elgParam = 1024; break;
+                        case 1: elgParam = 2048; break;
+                        case 2: elgParam = 4096;
+                    }
+                    generateKeys.generateKeys(1024, elgParam ,emailTextField.getText() ,pf.getPassword());
                 }else{
                     JOptionPane.showMessageDialog(frame, "Something wrong, check your email or name.");
                 }
