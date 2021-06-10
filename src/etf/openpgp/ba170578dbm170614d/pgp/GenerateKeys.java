@@ -8,6 +8,7 @@ import org.bouncycastle.bcpg.sig.Features;
 import org.bouncycastle.bcpg.sig.KeyFlags;
 import org.bouncycastle.crypto.generators.RSAKeyPairGenerator;
 import org.bouncycastle.crypto.params.RSAKeyGenerationParameters;
+import org.bouncycastle.jce.spec.ElGamalParameterSpec;
 import org.bouncycastle.openpgp.*;
 import org.bouncycastle.openpgp.operator.PBESecretKeyEncryptor;
 import org.bouncycastle.openpgp.operator.PGPDigestCalculator;
@@ -15,7 +16,10 @@ import org.bouncycastle.openpgp.operator.bc.BcPBESecretKeyEncryptorBuilder;
 import org.bouncycastle.openpgp.operator.bc.BcPGPContentSignerBuilder;
 import org.bouncycastle.openpgp.operator.bc.BcPGPDigestCalculatorProvider;
 import org.bouncycastle.openpgp.operator.bc.BcPGPKeyPair;
+import org.bouncycastle.openpgp.operator.jcajce.JcaPGPContentSignerBuilder;
+import org.bouncycastle.openpgp.operator.jcajce.JcaPGPDigestCalculatorProviderBuilder;
 import org.bouncycastle.openpgp.operator.jcajce.JcaPGPKeyPair;
+import org.bouncycastle.openpgp.operator.jcajce.JcePBESecretKeyEncryptorBuilder;
 
 import javax.crypto.spec.DHParameterSpec;
 import java.io.IOException;
@@ -63,74 +67,90 @@ public class GenerateKeys {
         } catch (PGPException e) {
             e.printStackTrace();
         }
-
     }
 
+
+    public void PGPCryptoBC() {
+        try {
+            BigInteger primeModulous = new BigInteger("36F0255DDE973DCB3B399D747F23E32ED6FDB1F77598338BFDF44159C4EC64DDAEB5F78671CBFB22106AE64C32C5BCE4CFD4F5920DA0EBC8B01ECA9292AE3DBA1B7A4A899DA181390BB3BD1659C81294F400A3490BF9481211C79404A576605A5160DBEE83B4E019B6D799AE131BA4C23DFF83475E9C40FA6725B7C9E3AA2C6596E9C05702DB30A07C9AA2DC235C5269E39D0CA9DF7AAD44612AD6F88F69699298F3CAB1B54367FB0E8B93F735E7DE83CD6FA1B9D1C931C41C6188D3E7F179FC64D87C5D13F85D704A3AA20F90B3AD3621D434096AA7E8E7C66AB683156A951AEA2DD9E76705FAEFEA8D71A5755355970000000000000001", 16);
+            BigInteger baseGenerator = new BigInteger("2", 16);
+            ElGamalParameterSpec paramSpecs = new ElGamalParameterSpec(primeModulous, baseGenerator);
+
+            KeyPair dsaKeyPair = generateDsaKeyPair(1024);
+            KeyPair elGamalKeyPair = generateElGamalKeyPair(paramSpecs);
+            PGPKeyRingGenerator pgpKeyRingGen = createPGPKeyRingGenerator(dsaKeyPair, elGamalKeyPair, "test@gmail.com", "TestPass12345!".toCharArray());
+        }
+        catch(Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 
     public final static PGPKeyRingGenerator generateKeyRingGenerator(int dsaParam, int elgParam, String email, char[] password) {
 
 
         PGPKeyRingGenerator keyRingGen = null;
         try {
-            KeyPairGenerator elgKpg = KeyPairGenerator.getInstance("ELGAMAL", "BC");
+            BigInteger primeModulous = new BigInteger("36F0255DDE973DCB3B399D747F23E32ED6FDB1F77598338BFDF44159C4EC64DDAEB5F78671CBFB22106AE64C32C5BCE4CFD4F5920DA0EBC8B01ECA9292AE3DBA1B7A4A899DA181390BB3BD1659C81294F400A3490BF9481211C79404A576605A5160DBEE83B4E019B6D799AE131BA4C23DFF83475E9C40FA6725B7C9E3AA2C6596E9C05702DB30A07C9AA2DC235C5269E39D0CA9DF7AAD44612AD6F88F69699298F3CAB1B54367FB0E8B93F735E7DE83CD6FA1B9D1C931C41C6188D3E7F179FC64D87C5D13F85D704A3AA20F90B3AD3621D434096AA7E8E7C66AB683156A951AEA2DD9E76705FAEFEA8D71A5755355970000000000000001", 16);
+            BigInteger baseGenerator = new BigInteger("2", 16);
+            ElGamalParameterSpec paramSpecs = new ElGamalParameterSpec(primeModulous, baseGenerator);
 
-            BigInteger g = new BigInteger("153d5d6172adb43045b68ae8e1de1070b6137005686d29d3d73a7749199681ee5b212" +
-                    "c9b96bfdcfa5b20cd5e3fd2044895d609cf9b410b7a0f12ca1cb9a428cc", 16);
-            BigInteger p = new BigInteger ("9494fec095f3b85ee286542b3836fc81a5dd0a0349b4c239dd38744d488cf8e31db8b" +
-                    "cb7d33b41abb9e5a33cca9144b1cef332c94bf0573bf047a3aca98cdf3b", 16);
+            KeyPair dsaKeyPair = generateDsaKeyPair(dsaParam);
+            KeyPair elGamalKeyPair = generateElGamalKeyPair(elgParam);
+            KeyPair elGamalKeyPair1 = generateElGamalKeyPair(paramSpecs);
 
-
-            DHParameterSpec elParams = new DHParameterSpec(p, g);
-
-            elgKpg.initialize(elParams);
-            KeyPair elgKeyPair = elgKpg.generateKeyPair();
-            PGPKeyPair encryptionKeyPair = new JcaPGPKeyPair(PGPPublicKey.ELGAMAL_GENERAL, elgKeyPair, new Date());
-
-            KeyPairGenerator kpg = KeyPairGenerator.getInstance("DSA");
-
-            kpg.initialize(dsaParam, new SecureRandom());
-            KeyPair dsaKeyPair = kpg.generateKeyPair();
-            PGPKeyPair signatureKeyPair = new JcaPGPKeyPair(PGPPublicKey.DSA, dsaKeyPair , new Date());
-
-
-
-            PGPSignatureSubpacketGenerator signatureSG = new PGPSignatureSubpacketGenerator();
-            PGPSignatureSubpacketGenerator encryptionSG = new PGPSignatureSubpacketGenerator();
-
-            PGPDigestCalculator sha1Calc = new BcPGPDigestCalculatorProvider().get(HashAlgorithmTags.SHA1);
-            PGPDigestCalculator sha256Calc = new BcPGPDigestCalculatorProvider().get(HashAlgorithmTags.SHA256);
-
-            PBESecretKeyEncryptor pske = (new BcPBESecretKeyEncryptorBuilder(PGPEncryptedData.AES_256,
-                    sha256Calc, 0xc0)).build(password);
-
-
-            signatureSG.setKeyFlags(false, KeyFlags.SIGN_DATA | KeyFlags.CERTIFY_OTHER);
-
-            signatureSG.setPreferredSymmetricAlgorithms(false, new int[]{SymmetricKeyAlgorithmTags.AES_128});
-            signatureSG.setPreferredHashAlgorithms(false, new int[]{HashAlgorithmTags.SHA1});
-
-            signatureSG.setFeature(false, Features.FEATURE_MODIFICATION_DETECTION);
-
-            encryptionSG.setKeyFlags(false, KeyFlags.ENCRYPT_COMMS | KeyFlags.ENCRYPT_STORAGE);
-
-            keyRingGen = new PGPKeyRingGenerator(PGPSignature.POSITIVE_CERTIFICATION, signatureKeyPair,
-                    email, sha1Calc, signatureSG.generate(), null,
-                    new BcPGPContentSignerBuilder(signatureKeyPair.getPublicKey().getAlgorithm(),
-                    HashAlgorithmTags.SHA1),pske);
-
-            keyRingGen.addSubKey(encryptionKeyPair, encryptionSG.generate(), null);
+            PGPKeyRingGenerator pgpKeyRingGen = createPGPKeyRingGenerator(dsaKeyPair, elGamalKeyPair, email, password);
 
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (NoSuchProviderException | PGPException e) {
+            System.out.println("Error encrypting key");
             e.printStackTrace();
+
         } catch (InvalidAlgorithmParameterException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return keyRingGen;
     }
 
 
+
+    public static final PGPKeyRingGenerator createPGPKeyRingGenerator(KeyPair dsaKeyPair, KeyPair elGamalKeyPair, String identity, char[] passphrase) throws Exception
+    {
+        PGPKeyPair dsaPgpKeyPair = new JcaPGPKeyPair(PGPPublicKey.DSA, dsaKeyPair, new Date());
+        PGPKeyPair elGamalPgpKeyPair = new JcaPGPKeyPair(PGPPublicKey.ELGAMAL_ENCRYPT, elGamalKeyPair, new Date());
+        PGPDigestCalculator sha1Calc = new JcaPGPDigestCalculatorProviderBuilder().build().get(HashAlgorithmTags.SHA1);
+        PGPKeyRingGenerator keyRingGen = new PGPKeyRingGenerator(PGPSignature.POSITIVE_CERTIFICATION, dsaPgpKeyPair, identity, sha1Calc,
+                null, null, new JcaPGPContentSignerBuilder(dsaPgpKeyPair.getPublicKey().getAlgorithm(),
+                HashAlgorithmTags.SHA1), new JcePBESecretKeyEncryptorBuilder(PGPEncryptedData.AES_256, sha1Calc).setProvider("BC").build(passphrase));
+
+        keyRingGen.addSubKey(elGamalPgpKeyPair);
+        return keyRingGen;
+    }
+    public static final KeyPair generateDsaKeyPair(int keySize) throws NoSuchAlgorithmException, NoSuchProviderException
+    {
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("DSA", "BC");
+        keyPairGenerator.initialize(keySize, new SecureRandom());
+        KeyPair keyPair = keyPairGenerator.generateKeyPair();
+        return keyPair;
+    }
+
+    public static final KeyPair generateElGamalKeyPair(int keySize) throws Exception
+    {
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("ELGAMAL", "BC");
+        keyPairGenerator.initialize(keySize);
+        KeyPair keyPair = keyPairGenerator.generateKeyPair();
+        return keyPair;
+    }
+
+    public static final KeyPair generateElGamalKeyPair(ElGamalParameterSpec paramSpecs) throws Exception
+    {
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("ELGAMAL", "BC");
+        keyPairGenerator.initialize(paramSpecs);
+        KeyPair keyPair = keyPairGenerator.generateKeyPair();
+        return keyPair;
+    }
 
 
 }
