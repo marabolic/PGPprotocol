@@ -75,6 +75,7 @@ public class GenerateKeyForm {
                     System.out.println("pass: " + password);
                     generateKeys.generateKeys(1024, elgParam, emailTextField.getText(), password.toCharArray());
 
+
                     System.out.println(GenerateKeys.pgpPublicKeyRing.size() + "");
 
                     overviewKey();
@@ -82,6 +83,7 @@ public class GenerateKeyForm {
                     secretKeyComboBox.revalidate();
                     publicKeyComboBox.repaint();
                     secretKeyComboBox.repaint();
+
                 }else{
                     JOptionPane.showMessageDialog(frame, "Something wrong, check your email or name.");
                 }
