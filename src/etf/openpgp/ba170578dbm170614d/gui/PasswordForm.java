@@ -51,4 +51,8 @@ public class PasswordForm {
         password = passwordField.getPassword();
     }
 
+    public char[] getPassword(){
+        return password;
+    }
+
 }
