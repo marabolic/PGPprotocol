@@ -51,6 +51,13 @@ public class MainForm {
                 new ImportExport(frame);
             }
         });
+        showRingButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.setVisible(false);
+                new KeyRing(frame);
+            }
+        });
     }
 
     public static void main(String[] args) {
