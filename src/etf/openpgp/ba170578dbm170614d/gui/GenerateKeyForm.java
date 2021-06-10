@@ -49,7 +49,8 @@ public class GenerateKeyForm {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(ValidEmail(emailTextField.getText()) && nameTextField.getText() != null){
-                    PasswordForm pf= new PasswordForm();
+                    //PasswordForm pf= new PasswordForm(frame);
+                    String password = JOptionPane.showInputDialog(frame,"Password");
                     GenerateKeys generateKeys = new GenerateKeys();
                     int selectedIndex = asymetricAlgorithms.getSelectedIndex();
                     int elgParam = 1024;
@@ -58,7 +59,10 @@ public class GenerateKeyForm {
                         case 1: elgParam = 2048; break;
                         case 2: elgParam = 4096;
                     }
-                    generateKeys.generateKeys(1024, elgParam ,emailTextField.getText() ,pf.getPassword());
+
+                    System.out.println("email: " + emailTextField.getText());
+                    System.out.println("pass: " + password);
+                    generateKeys.generateKeys(1024, elgParam, emailTextField.getText(), password.toCharArray());
                 }else{
                     JOptionPane.showMessageDialog(frame, "Something wrong, check your email or name.");
                 }
