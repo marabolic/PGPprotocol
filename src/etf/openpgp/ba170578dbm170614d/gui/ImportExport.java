@@ -1,5 +1,6 @@
 package etf.openpgp.ba170578dbm170614d.gui;
 
+import etf.openpgp.ba170578dbm170614d.pgp.GenerateKeys;
 import org.bouncycastle.bcpg.ArmoredOutputStream;
 import org.bouncycastle.openpgp.*;
 import org.bouncycastle.openpgp.operator.bc.BcKeyFingerprintCalculator;
@@ -8,6 +9,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -24,9 +26,6 @@ public class ImportExport {
     private JFrame frame;
     private JFileChooser importKeys;
 
-    Collection<PGPPublicKeyRing> publicKeyRing = null; // ovo treba iz druge klase da uzme
-    Collection<PGPSecretKeyRing> secretKeyRing = null; // ovo treba iz druge klase da uzme napisao sam samo da mi ne iskace error
-
     public void init(JFrame MainFrame){
         frame = new JFrame("Import/Export");
         frame.setContentPane(importExport);
@@ -34,8 +33,20 @@ public class ImportExport {
         frame.pack();
         frame.setVisible(true);
 
-        //exportPublicKeysInComboBox();
-        //exportSecretKeysInComboBox();
+        if(GenerateKeys.pgpSecretKeyRing != null){
+            exportSecretKeysInComboBox();
+            System.out.println("NIJE PRAZAN SECRET");
+        }else{
+            System.out.println("PRAZAN SECRET");
+        }
+        if(GenerateKeys.pgpPublicKeyRing != null){
+            exportPublicKeysInComboBox();
+            System.out.println("NIJE PRAZAN PUBLIC");
+        }else{
+            System.out.println("PRAZAN PUBLIC");
+        }
+
+
 
         exportPublicKeyButton.addActionListener(new ActionListener() {
             @Override
@@ -79,18 +90,20 @@ public class ImportExport {
 
     private void exportPublicKeysInComboBox() {
         publicKeyComboBox.removeAll();
-        for (Iterator<PGPPublicKeyRing> iterator = publicKeyRing.iterator(); iterator.hasNext(); ) {
+        for (Iterator<PGPPublicKeyRing> iterator = GenerateKeys.pgpPublicKeyRing.iterator(); iterator.hasNext(); ) {
             PGPPublicKeyRing next = iterator.next();
-            secretKeyComboBox.addItem(next.getPublicKey().getKeyID() + "");
+            publicKeyComboBox.addItem(next.getPublicKey().getKeyID() + "");
+            System.out.println(next.getPublicKey().getKeyID() + "PUBLIC PUBLIC");
         }
 
     }
 
     private void exportSecretKeysInComboBox(){
         secretKeyComboBox.removeAll();
-        for (Iterator<PGPSecretKeyRing> iterator = secretKeyRing.iterator(); iterator.hasNext();) {
+        for (Iterator<PGPSecretKeyRing> iterator = GenerateKeys.pgpSecretKeyRing.iterator(); iterator.hasNext();) {
             PGPSecretKeyRing next = iterator.next();
             secretKeyComboBox.addItem(next.getSecretKey().getKeyID() + "");
+            System.out.println(next.getSecretKey().getKeyID() + "SECRET SECRET");
         }
     }
 
@@ -102,7 +115,7 @@ public class ImportExport {
 
         PGPPublicKeyRing next = null;
 
-        for (Iterator<PGPPublicKeyRing> iterator = publicKeyRing.iterator(); iterator.hasNext();) {
+        for (Iterator<PGPPublicKeyRing> iterator = GenerateKeys.pgpPublicKeyRing.iterator(); iterator.hasNext();) {
             next = iterator.next();
             if ((next.getPublicKey().getKeyID() + "").equals(exportPublicKeyString)) {
                 break;
@@ -132,7 +145,7 @@ public class ImportExport {
 
         PGPSecretKeyRing next = null;
 
-        for (Iterator<PGPSecretKeyRing> iterator = secretKeyRing.iterator(); iterator.hasNext();) {
+        for (Iterator<PGPSecretKeyRing> iterator = GenerateKeys.pgpSecretKeyRing.iterator(); iterator.hasNext();) {
             next = iterator.next();
             if ((next.getSecretKey().getKeyID() + "").equals(exportSecretKeyString)) {
                 break;
@@ -140,7 +153,7 @@ public class ImportExport {
 
         }
         try {
-            exportSecretKeyFile = new ArmoredOutputStream(new FileOutputStream("ExportedPublicKey.asc"));
+            exportSecretKeyFile = new ArmoredOutputStream(new FileOutputStream("ExportedSecretKey.asc"));
             next.encode(exportSecretKeyFile);
             exportSecretKeyFile.close();
         } catch (IOException e) {
@@ -166,7 +179,10 @@ public class ImportExport {
                 PGPPublicKeyRing importPublicKeyRing = new PGPPublicKeyRing(PGPUtil.getDecoderStream(new FileInputStream(file.getAbsolutePath())), new BcKeyFingerprintCalculator());
                 importedPublicKey = importPublicKeyRing.getPublicKey();
 
-                publicKeyRing.add(importPublicKeyRing); // ovde treba umesto privateKeyRing staviti key ring tamo gde ga cuvamo
+                if(GenerateKeys.pgpPublicKeyRing == null){
+                    GenerateKeys.pgpPublicKeyRing = new ArrayList<>();
+                }
+                GenerateKeys.pgpPublicKeyRing.add(importPublicKeyRing);
 
                 System.out.println((file.getAbsolutePath()));
             } catch (Exception ex) {
@@ -194,7 +210,10 @@ public class ImportExport {
                 PGPSecretKeyRing importSecretKeyRing = new PGPSecretKeyRing(PGPUtil.getDecoderStream(new FileInputStream(file.getAbsolutePath())), new BcKeyFingerprintCalculator());
                 importedSecretKey = importSecretKeyRing.getSecretKey();
 
-                secretKeyRing.add(importSecretKeyRing); // ovde treba umesto privateKeyRing staviti key ring tamo gde ga cuvamo
+                if(GenerateKeys.pgpSecretKeyRing == null){
+                    GenerateKeys.pgpSecretKeyRing = new ArrayList<>();
+                }
+                GenerateKeys.pgpSecretKeyRing.add(importSecretKeyRing);
 
                 System.out.println((file.getAbsolutePath()));
             } catch (Exception ex) {
