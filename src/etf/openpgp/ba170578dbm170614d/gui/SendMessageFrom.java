@@ -1,10 +1,16 @@
 package etf.openpgp.ba170578dbm170614d.gui;
 
+import etf.openpgp.ba170578dbm170614d.pgp.GenerateKeys;
+import org.bouncycastle.openpgp.PGPPublicKeyRing;
+import org.bouncycastle.openpgp.PGPSecretKey;
+import org.bouncycastle.openpgp.PGPSecretKeyRing;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.Iterator;
 
 public class SendMessageFrom {
     private JCheckBox encriptionCheckBox;
@@ -14,10 +20,12 @@ public class SendMessageFrom {
     private JPanel sendMessageFormPanel;
     private JList publicKeyList;
     private JComboBox privateKeySignatureBox;
+    private JComboBox publicKeyEncryptionBox;
     private JComboBox symmetricAlgorithmBox;
     private JButton sendButton;
     private JTextArea messageTextArea;
     private JButton backButton;
+
     private JFrame frame;
 
     void initComponent(JFrame MainFrame){
@@ -26,19 +34,25 @@ public class SendMessageFrom {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
 
-        privateKeySignatureBox.addItem("Test 1");
-        privateKeySignatureBox.addItem("Test 2");
+        publicKeyEncryptionBox.removeAll();
+        for (Iterator<PGPPublicKeyRing> iterator = GenerateKeys.pgpPublicKeyRing.iterator(); iterator.hasNext(); ) {
+            PGPPublicKeyRing next = iterator.next();
+            publicKeyEncryptionBox.addItem(next.getPublicKey().getKeyID() + "");
+            System.out.println(next.getPublicKey().getKeyID() + "PUBLIC PUBLIC");
+        }
+
+        publicKeyEncryptionBox.setEnabled(false);
+
+
+        privateKeySignatureBox.removeAll();
+        for (Iterator<PGPSecretKeyRing> iterator = GenerateKeys.pgpSecretKeyRing.iterator(); iterator.hasNext();) {
+            PGPSecretKeyRing next = iterator.next();
+            privateKeySignatureBox.addItem(next.getSecretKey().getKeyID() + "");
+            System.out.println(next.getSecretKey().getKeyID() + "SECRET SECRET");
+        }
 
         privateKeySignatureBox.setEnabled(false);
 
-        DefaultListModel listModel = new DefaultListModel();
-        listModel.addElement("test 1");
-        listModel.addElement("test 2");
-        listModel.addElement("test 3");
-
-        publicKeyList.setModel(listModel);
-
-        publicKeyList.setEnabled(false);
 
         symmetricAlgorithmBox.addItem("3DES + EDE");
         symmetricAlgorithmBox.addItem("AES 128 bits");
@@ -71,7 +85,8 @@ public class SendMessageFrom {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if(signatureCheckBox.isSelected()){
-                    PasswordForm pf = new PasswordForm(frame);
+                    //PasswordForm pf = new PasswordForm(frame);
+                    String password = JOptionPane.showInputDialog(frame,"Password");
                     //TODO: password checking
                     if (true){
                         privateKeySignatureBox.setEnabled(true);
@@ -88,10 +103,10 @@ public class SendMessageFrom {
             public void itemStateChanged(ItemEvent e) {
                 if(encriptionCheckBox.isSelected()){
                     symmetricAlgorithmBox.setEnabled(true);
-                    publicKeyList.setEnabled(true);
+                    publicKeyEncryptionBox.setEnabled(true);
                 }else{
                     symmetricAlgorithmBox.setEnabled(false);
-                    publicKeyList.setEnabled(false);
+                    publicKeyEncryptionBox.setEnabled(false);
                 }
             }
         });
