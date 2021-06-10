@@ -71,8 +71,9 @@ public class SendMessageFrom {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if(signatureCheckBox.isSelected()){
-                    PasswordForm pf = new PasswordForm();
-                    if (pf.checkPassword()){
+                    PasswordForm pf = new PasswordForm(frame);
+                    //TODO: password checking
+                    if (true){
                         privateKeySignatureBox.setEnabled(true);
                     }
 

@@ -53,7 +53,7 @@ public class GenerateKeys {
         pgpSecretKeyRing = new ArrayList<>();
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         PGPKeyRingGenerator krgen = generateKeyRingGenerator(dsaParam, elgParam, email, password);
-
+        System.out.println("krgen: " + krgen);
         try {
             PGPPublicKeyRing pkr = krgen.generatePublicKeyRing();
             pgpPublicKeyRing.add(pkr);
@@ -96,9 +96,9 @@ public class GenerateKeys {
 
             KeyPair dsaKeyPair = generateDsaKeyPair(dsaParam);
             KeyPair elGamalKeyPair = generateElGamalKeyPair(elgParam);
-            KeyPair elGamalKeyPair1 = generateElGamalKeyPair(paramSpecs);
+            //KeyPair elGamalKeyPair1 = generateElGamalKeyPair(paramSpecs);
 
-            PGPKeyRingGenerator pgpKeyRingGen = createPGPKeyRingGenerator(dsaKeyPair, elGamalKeyPair, email, password);
+            keyRingGen = createPGPKeyRingGenerator(dsaKeyPair, elGamalKeyPair, email, password);
 
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
