@@ -75,6 +75,8 @@ public class GenerateKeyForm {
                     System.out.println("pass: " + password);
                     generateKeys.generateKeys(1024, elgParam, emailTextField.getText(), password.toCharArray());
 
+                    System.out.println(GenerateKeys.pgpPublicKeyRing.size() + "");
+
                     overviewKey();
                     publicKeyComboBox.revalidate();
                     secretKeyComboBox.revalidate();
@@ -105,13 +107,17 @@ public class GenerateKeyForm {
 
                 if(publicKey[1].equals(secretKey[1])){
                     String password = JOptionPane.showInputDialog(frame,"Password");
-                    deleteKeys(secretKey[1], password);
+                    if(deleteKeys(secretKey[1], password)){
+                        publicKeyComboBox.removeItem(publicKey[0]+ " " +publicKey[1]);
+                        secretKeyComboBox.removeItem(secretKey[0] + " " + secretKey[1]);
 
-                    overviewKey();
-                    publicKeyComboBox.revalidate();
-                    secretKeyComboBox.revalidate();
-                    publicKeyComboBox.repaint();
-                    secretKeyComboBox.repaint();
+                        publicKeyComboBox.revalidate();
+                        secretKeyComboBox.revalidate();
+                        publicKeyComboBox.repaint();
+                        secretKeyComboBox.repaint();
+                    }else{
+                        JOptionPane.showMessageDialog(frame, "Wrong password.");
+                    }
                 }else{
                     JOptionPane.showMessageDialog(frame, "Something wrong, private and secret key id isnt equal.");
                 }
@@ -160,7 +166,7 @@ public class GenerateKeyForm {
 
     }
 
-    private void deleteKeys(String keyID,String password){
+    private boolean deleteKeys(String keyID,String password){
         PGPSecretKeyRing next = null;
         for (Iterator<PGPSecretKeyRing> iterator = GenerateKeys.pgpSecretKeyRing.iterator(); iterator.hasNext();) {
             next = iterator.next();
@@ -172,7 +178,9 @@ public class GenerateKeyForm {
         PBESecretKeyDecryptor dec = new BcPBESecretKeyDecryptorBuilder(new BcPGPDigestCalculatorProvider()).build(password.toCharArray());
 
         try {
-            if(next.getSecretKey().extractPrivateKey(dec) != null){
+            if(dec == null){
+                return false;
+            }else if(next.getSecretKey().extractPrivateKey(dec) != null){
                 System.out.println("SIFRA DOBRA");
                 System.out.println("PRIVATNI OBRISAN");
                 GenerateKeys.pgpSecretKeyRing.remove(next);
@@ -188,6 +196,7 @@ public class GenerateKeyForm {
 
                 GenerateKeys.pgpPublicKeyRing.remove(nextPublic);
                 System.out.println("JAVNI OBRISAN");
+                return true;
             }else{
                 System.out.println("SIFRA NIJE DOBRA");
             }
@@ -195,6 +204,7 @@ public class GenerateKeyForm {
         } catch (PGPException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
 }
