@@ -29,6 +29,7 @@ public class GenerateKeyForm {
     private JComboBox secretKeyComboBox;
     private JLabel PublicKey;
     private JLabel secretKey;
+    private JComboBox dsaAsymetricComboBox;
     private JFrame frame;
 
     private static final String regex = "^(.+)@(.+)$";
@@ -51,6 +52,9 @@ public class GenerateKeyForm {
         asymetricAlgorithms.addItem("ElGamal 2048");
         asymetricAlgorithms.addItem("ElGamal 4096");
 
+        dsaAsymetricComboBox.addItem("DSA 1024");
+        dsaAsymetricComboBox.addItem("DSA 2048");
+
         asymetricAlgorithms.setSelectedIndex(0);
         overviewKey();
 
@@ -64,16 +68,25 @@ public class GenerateKeyForm {
                     String password = JOptionPane.showInputDialog(frame,"Password");
                     GenerateKeys generateKeys = new GenerateKeys();
                     int selectedIndex = asymetricAlgorithms.getSelectedIndex();
+                    int selectedIndexDsaComboBox = dsaAsymetricComboBox.getSelectedIndex();
+
                     int elgParam = 1024;
+                    int dsaParam = 1024;
+
                     switch (selectedIndex){
                         case 0: elgParam = 1024; break;
                         case 1: elgParam = 2048; break;
                         case 2: elgParam = 4096;
                     }
 
+                    switch (selectedIndexDsaComboBox){
+                        case 0: dsaParam = 1024; break;
+                        case 1: dsaParam = 2048;
+                    }
+
                     System.out.println("email: " + emailTextField.getText());
                     System.out.println("pass: " + password);
-                    generateKeys.generateKeys(1024, elgParam, emailTextField.getText(), password.toCharArray());
+                    generateKeys.generateKeys(dsaParam, elgParam, emailTextField.getText(), password.toCharArray());
 
 
                     System.out.println(GenerateKeys.pgpPublicKeyRing.size() + "");
