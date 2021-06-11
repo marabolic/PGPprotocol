@@ -1,10 +1,18 @@
 package etf.openpgp.ba170578dbm170614d.gui;
 
+import etf.openpgp.ba170578dbm170614d.pgp.GenerateKeys;
+import org.bouncycastle.openpgp.*;
+import org.bouncycastle.openpgp.operator.PBESecretKeyDecryptor;
+import org.bouncycastle.openpgp.operator.bc.BcPBESecretKeyDecryptorBuilder;
+import org.bouncycastle.openpgp.operator.bc.BcPGPDigestCalculatorProvider;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.security.*;
+import java.util.Iterator;
 
 public class SendMessageFrom {
     private JCheckBox encriptionCheckBox;
@@ -14,10 +22,13 @@ public class SendMessageFrom {
     private JPanel sendMessageFormPanel;
     private JList publicKeyList;
     private JComboBox privateKeySignatureBox;
+    private JComboBox publicKeyEncryptionBox;
     private JComboBox symmetricAlgorithmBox;
     private JButton sendButton;
     private JTextArea messageTextArea;
     private JButton backButton;
+    private JTextField passwordField;
+
     private JFrame frame;
 
     void initComponent(JFrame MainFrame){
@@ -26,19 +37,24 @@ public class SendMessageFrom {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
 
-        privateKeySignatureBox.addItem("Test 1");
-        privateKeySignatureBox.addItem("Test 2");
+        publicKeyEncryptionBox.removeAll();
+        for (Iterator<PGPPublicKeyRing> iterator = GenerateKeys.pgpPublicKeyRing.iterator(); iterator.hasNext(); ) {
+            PGPPublicKeyRing next = iterator.next();
+            publicKeyEncryptionBox.addItem(next.getPublicKey().getKeyID() + "");
+            System.out.println(next.getPublicKey().getKeyID() + "PUBLIC PUBLIC");
+        }
+
+        publicKeyEncryptionBox.setEnabled(false);
+
+        privateKeySignatureBox.removeAll();
+        for (Iterator<PGPSecretKeyRing> iterator = GenerateKeys.pgpSecretKeyRing.iterator(); iterator.hasNext();) {
+            PGPSecretKeyRing next = iterator.next();
+            privateKeySignatureBox.addItem(next.getSecretKey().getKeyID() + "");
+            System.out.println(next.getSecretKey().getKeyID() + "SECRET SECRET");
+        }
 
         privateKeySignatureBox.setEnabled(false);
 
-        DefaultListModel listModel = new DefaultListModel();
-        listModel.addElement("test 1");
-        listModel.addElement("test 2");
-        listModel.addElement("test 3");
-
-        publicKeyList.setModel(listModel);
-
-        publicKeyList.setEnabled(false);
 
         symmetricAlgorithmBox.addItem("3DES + EDE");
         symmetricAlgorithmBox.addItem("AES 128 bits");
@@ -50,9 +66,62 @@ public class SendMessageFrom {
 
         frame.setVisible(true);
 
+        passwordField.setEnabled(false);
+
         sendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                char[] message = messageTextArea.getText().toCharArray();
+                byte [] messageInBytes = new byte[message.length];
+                for (int i = 0; i < message.length; i++){
+                    messageInBytes[i] = (byte) message[i];
+                }
+                if (message != null){
+                    if (signatureCheckBox.isSelected()){
+                        try {
+                            int index = privateKeySignatureBox.getSelectedIndex();
+                            //TODO: find selected private key for signature initialization
+                            int i = 0;
+                            PGPSecretKeyRing temp = null;
+                            for (Iterator<PGPSecretKeyRing> iterator = GenerateKeys.pgpSecretKeyRing.iterator(); iterator.hasNext(); ) {
+                                temp = iterator.next();
+                                if (i == index){
+                                    break;
+                                }
+                                i++;
+                            }
+                            //TODO: sign
+
+                            Signature signature = Signature.getInstance("DSA", "BC");
+                            PBESecretKeyDecryptor decryptor = new BcPBESecretKeyDecryptorBuilder(
+                                    new BcPGPDigestCalculatorProvider()).build(passwordField.getText().toCharArray());
+
+                            signature.initSign((PrivateKey) temp.getSecretKey().extractPrivateKey(decryptor), new SecureRandom());
+                            signature.update(messageInBytes);
+                            signature.sign();
+                        } catch (NoSuchAlgorithmException ex) {
+                            ex.printStackTrace();
+                        } catch (NoSuchProviderException ex) {
+                            ex.printStackTrace();
+                        } catch (SignatureException ex) {
+                            ex.printStackTrace();
+                        } catch (PGPException ex) {
+                            ex.printStackTrace();
+                        } catch (InvalidKeyException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                    if (encriptionCheckBox.isSelected()){
+
+                    }
+                    if(compressionCheckBox.isSelected()){
+
+                    }
+                    if(conversionCheckBox.isSelected()){
+
+                    }
+                }
+
                 JOptionPane.showMessageDialog(frame, "Message sent successfully.");
                 frame.dispose();
                 MainFrame.setVisible(true);
@@ -71,12 +140,8 @@ public class SendMessageFrom {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if(signatureCheckBox.isSelected()){
-                    PasswordForm pf = new PasswordForm(frame);
-                    //TODO: password checking
-                    if (true){
-                        privateKeySignatureBox.setEnabled(true);
-                    }
-
+                    privateKeySignatureBox.setEnabled(true);
+                    passwordField.setEnabled(true);
                 }else{
                     privateKeySignatureBox.setEnabled(false);
                 }
@@ -88,10 +153,10 @@ public class SendMessageFrom {
             public void itemStateChanged(ItemEvent e) {
                 if(encriptionCheckBox.isSelected()){
                     symmetricAlgorithmBox.setEnabled(true);
-                    publicKeyList.setEnabled(true);
+                    publicKeyEncryptionBox.setEnabled(true);
                 }else{
                     symmetricAlgorithmBox.setEnabled(false);
-                    publicKeyList.setEnabled(false);
+                    publicKeyEncryptionBox.setEnabled(false);
                 }
             }
         });

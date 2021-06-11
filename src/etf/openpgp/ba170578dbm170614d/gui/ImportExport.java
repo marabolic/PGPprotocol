@@ -95,7 +95,6 @@ public class ImportExport {
             publicKeyComboBox.addItem(next.getPublicKey().getKeyID() + "");
             System.out.println(next.getPublicKey().getKeyID() + "PUBLIC PUBLIC");
         }
-
     }
 
     private void exportSecretKeysInComboBox(){
