@@ -69,7 +69,7 @@ public class SendMessageFrom {
 
         passwordField.setEnabled(false);
 
-        sendButton.addActionListener(new ActionListener() {
+        /*sendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 char[] message = messageTextArea.getText().toCharArray();
@@ -127,7 +127,7 @@ public class SendMessageFrom {
                 frame.dispose();
                 MainFrame.setVisible(true);
             }
-        });
+        });*/
 
         backButton.addActionListener(new ActionListener() {
             @Override
@@ -166,11 +166,22 @@ public class SendMessageFrom {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(encriptionCheckBox.isSelected() && !signatureCheckBox.isSelected()){
-                    PGPPublicKeyRing nextPublic = null;
+                    PGPPublicKeyRing nextPublicKeyRing = null;
                     for (Iterator<PGPPublicKeyRing> iterator = GenerateKeys.pgpPublicKeyRing.iterator(); iterator.hasNext();) {
-                        nextPublic = iterator.next();
-                        if ((nextPublic.getPublicKey().getKeyID() + "").equals(publicKeyEncryptionBox.getSelectedItem())) {
+                        nextPublicKeyRing = iterator.next();
+                        if ((nextPublicKeyRing.getPublicKey().getKeyID() + "").equals(publicKeyEncryptionBox.getSelectedItem())) {
                             break;
+                        }
+                    }
+
+                    PGPPublicKey publicEncryptKey = null;
+                    for(Iterator<PGPPublicKey> iterator = nextPublicKeyRing.getPublicKeys(); iterator.hasNext();){
+                        publicEncryptKey = iterator.next();
+                        if(publicEncryptKey.isEncryptionKey()){
+                            System.out.println("ENKRIPTOVANI");
+                            break;
+                        }else{
+                            System.out.println("NIJE ENKRIPTOVANI");
                         }
                     }
 
@@ -185,7 +196,7 @@ public class SendMessageFrom {
                     if(messageTextArea.getText().equals("")){
                         JOptionPane.showMessageDialog(frame, "Message field is empty.");
                     }else{
-                        if(EncryptMessage.EncryptMessage(messageTextArea.getText(), nextPublic.getPublicKey(), conversionCheckBox.isSelected(), compressionCheckBox.isSelected(), symmetricAlg)){
+                        if(EncryptMessage.EncryptMessage(messageTextArea.getText(), publicEncryptKey, conversionCheckBox.isSelected(), compressionCheckBox.isSelected(), symmetricAlg)){
                             JOptionPane.showMessageDialog(frame, "The message was successfully encrypted");
                         }else{
                             JOptionPane.showMessageDialog(frame, "An error has occurred.");
