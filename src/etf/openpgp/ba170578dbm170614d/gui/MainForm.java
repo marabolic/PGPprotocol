@@ -41,7 +41,7 @@ public class MainForm {
             @Override
             public void actionPerformed(ActionEvent e) {
                 frame.setVisible(false);
-                new ReceiveMessageForm(frame);
+                new RecieveMessageForm(frame);
             }
         });
         importExportButton.addActionListener(new ActionListener() {
