@@ -46,6 +46,10 @@ public class EncryptMessage {
             // obavezno mora
             Security.addProvider(new BouncyCastleProvider());
 
+            // ako smo cerkirali konverziju da je uradi
+            if (conversion)
+                encryptMessage = new ArmoredOutputStream(encryptMessage);
+
             // Simetricni algoritam za kriptovanje poruke
             BcPGPDataEncryptorBuilder dataEncryptor = null;
             if (symetricAlg == 0) {
@@ -63,10 +67,6 @@ public class EncryptMessage {
             // kljuc sa kojim kriptujemo poruku
             BcPublicKeyKeyEncryptionMethodGenerator bc = new BcPublicKeyKeyEncryptionMethodGenerator(publicKey);
             encryptedDataGenerator.addMethod(bc);
-
-            // ako smo cerkirali konverziju da je uradi
-            if (conversion)
-                encryptMessage = new ArmoredOutputStream(encryptMessage);
 
             PGPCompressedDataGenerator commpressedDataGenerator = null;
 
@@ -124,6 +124,10 @@ public class EncryptMessage {
 
             Security.addProvider(new BouncyCastleProvider());
 
+            // konverzija ako je cerkirana
+            if (conversion)
+                encryptMessage = new ArmoredOutputStream(encryptMessage);
+
             BcPGPDataEncryptorBuilder dataEncryptor = null;
             if (symetricAlg == 0) {
                 dataEncryptor = new BcPGPDataEncryptorBuilder(PGPEncryptedData.TRIPLE_DES);
@@ -134,11 +138,6 @@ public class EncryptMessage {
             PGPEncryptedDataGenerator encryptedDataGenerator = null;
             OutputStream outputCompress = null;
 
-            // konverzija ako je cerkirana
-            if (conversion)
-                encryptMessage = new ArmoredOutputStream(encryptMessage);
-
-            ByteArrayOutputStream byteArrayOutStream = new ByteArrayOutputStream();
             PGPCompressedDataGenerator commpressedDataGenerator = null;
 
             // kompresija ako je cerkirana
