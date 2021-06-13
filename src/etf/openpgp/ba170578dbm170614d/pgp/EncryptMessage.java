@@ -1,21 +1,35 @@
 package etf.openpgp.ba170578dbm170614d.pgp;
 
+
+
 import org.bouncycastle.bcpg.ArmoredOutputStream;
 import org.bouncycastle.bcpg.HashAlgorithmTags;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openpgp.*;
 import org.bouncycastle.openpgp.operator.PGPContentSignerBuilder;
-import org.bouncycastle.openpgp.operator.bc.BcPGPContentSignerBuilder;
-import org.bouncycastle.openpgp.operator.bc.BcPGPDataEncryptorBuilder;
-import org.bouncycastle.openpgp.operator.bc.BcPublicKeyKeyEncryptionMethodGenerator;
+import org.bouncycastle.openpgp.operator.bc.*;
+import org.bouncycastle.util.io.Streams;
 
 
 import java.io.*;
 import java.security.SecureRandom;
 import java.security.Security;
+import java.security.SignatureException;
 import java.util.Date;
+import java.util.Iterator;
+
 
 public class EncryptMessage {
+
+    /**
+     *
+     * @param message
+     * @param publicKey
+     * @param conversion
+     * @param compression
+     * @param symetricAlg
+     * @return
+     */
     public static boolean EncryptMessage(String message, PGPPublicKey publicKey, boolean conversion, boolean compression, int symetricAlg) {
         OutputStream encryptMessage = null;
         try {
@@ -82,7 +96,19 @@ public class EncryptMessage {
         return true;
     }
 
-
+    /**
+     *
+     * @param message
+     * @param name
+     * @param publicKey
+     * @param secretKey
+     * @param privateKey
+     * @param conversion
+     * @param compression
+     * @param encryption
+     * @param symetricAlg
+     * @return
+     */
     public static boolean SignEncryptMessage(String message, String name, PGPPublicKey publicKey, PGPSecretKey secretKey, PGPPrivateKey privateKey, boolean conversion, boolean compression, boolean encryption, int symetricAlg) {
         OutputStream encryptMessage = null;
         try {
@@ -189,5 +215,21 @@ public class EncryptMessage {
         return true;
     }
 
+    /**
+     *
+     * @param passwd
+     * @param o
+     */
+    public static void DecryptMessage(char [] passwd, Object o){
+
+    }
+
+    /**
+     *
+     * @param o
+     */
+    public static void ValidateMessage(Object o){
+
+    }
 
 }

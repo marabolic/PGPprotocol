@@ -16,6 +16,11 @@ public class KeyRing {
     private JButton backButton;
     private JFrame frame;
 
+
+    /**
+     *
+     * @param mainFrame
+     */
     private void init(JFrame mainFrame){
         frame = new JFrame("KeyRing");
         frame.setContentPane(keyRing);
@@ -55,6 +60,11 @@ public class KeyRing {
         });
     }
 
+
+    /**
+     *
+     * @param mainFrame
+     */
     public KeyRing(JFrame mainFrame){
         init(mainFrame);
     }

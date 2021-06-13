@@ -1,32 +1,17 @@
 package etf.openpgp.ba170578dbm170614d.pgp;
 
-import etf.openpgp.ba170578dbm170614d.gui.GenerateKeyForm;
-import etf.openpgp.ba170578dbm170614d.gui.PasswordForm;
 import org.bouncycastle.bcpg.HashAlgorithmTags;
-import org.bouncycastle.bcpg.SymmetricKeyAlgorithmTags;
-import org.bouncycastle.bcpg.sig.Features;
-import org.bouncycastle.bcpg.sig.KeyFlags;
-import org.bouncycastle.crypto.generators.RSAKeyPairGenerator;
-import org.bouncycastle.crypto.params.RSAKeyGenerationParameters;
 import org.bouncycastle.jce.spec.ElGamalParameterSpec;
 import org.bouncycastle.openpgp.*;
-import org.bouncycastle.openpgp.operator.PBESecretKeyEncryptor;
 import org.bouncycastle.openpgp.operator.PGPDigestCalculator;
-import org.bouncycastle.openpgp.operator.bc.BcPBESecretKeyEncryptorBuilder;
-import org.bouncycastle.openpgp.operator.bc.BcPGPContentSignerBuilder;
-import org.bouncycastle.openpgp.operator.bc.BcPGPDigestCalculatorProvider;
-import org.bouncycastle.openpgp.operator.bc.BcPGPKeyPair;
 import org.bouncycastle.openpgp.operator.jcajce.JcaPGPContentSignerBuilder;
 import org.bouncycastle.openpgp.operator.jcajce.JcaPGPDigestCalculatorProviderBuilder;
 import org.bouncycastle.openpgp.operator.jcajce.JcaPGPKeyPair;
 import org.bouncycastle.openpgp.operator.jcajce.JcePBESecretKeyEncryptorBuilder;
 
-import javax.crypto.spec.DHParameterSpec;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.*;
-import java.security.interfaces.DSAKeyPairGenerator;
-import java.security.interfaces.DSAParams;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -38,6 +23,14 @@ public class GenerateKeys {
     public static Collection<PGPPublicKeyRing> pgpPublicKeyRing = new ArrayList<>();
     public static Collection<PGPSecretKeyRing> pgpSecretKeyRing = new ArrayList<>();
 
+
+    /**
+     *
+     * @param dsaParam
+     * @param elgParam
+     * @param email
+     * @param password
+     */
     public static void generateKeys(int dsaParam, int elgParam, String email, char [] password){
 
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
@@ -59,7 +52,14 @@ public class GenerateKeys {
     }
 
 
-
+    /**
+     *
+     * @param dsaParam
+     * @param elgParam
+     * @param email
+     * @param password
+     * @return
+     */
     public final static PGPKeyRingGenerator generateKeyRingGenerator(int dsaParam, int elgParam, String email, char[] password) {
 
 
@@ -89,7 +89,15 @@ public class GenerateKeys {
         return keyRingGen;
     }
 
-
+    /**
+     *
+     * @param dsaKeyPair
+     * @param elGamalKeyPair
+     * @param identity
+     * @param passphrase
+     * @return
+     * @throws Exception
+     */
 
     public static final PGPKeyRingGenerator createPGPKeyRingGenerator(KeyPair dsaKeyPair, KeyPair elGamalKeyPair, String identity, char[] passphrase) throws Exception
     {
@@ -103,6 +111,14 @@ public class GenerateKeys {
         keyRingGen.addSubKey(elGamalPgpKeyPair);
         return keyRingGen;
     }
+
+    /**
+     *
+     * @param keySize
+     * @return
+     * @throws NoSuchAlgorithmException
+     * @throws NoSuchProviderException
+     */
     public static final KeyPair generateDsaKeyPair(int keySize) throws NoSuchAlgorithmException, NoSuchProviderException
     {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("DSA", "BC");
@@ -111,6 +127,12 @@ public class GenerateKeys {
         return keyPair;
     }
 
+    /**
+     *
+     * @param keySize
+     * @return
+     * @throws Exception
+     */
     public static final KeyPair generateElGamalKeyPair(int keySize) throws Exception
     {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("ELGAMAL", "BC");
@@ -119,6 +141,12 @@ public class GenerateKeys {
         return keyPair;
     }
 
+    /**
+     *
+     * @param paramSpecs
+     * @return
+     * @throws Exception
+     */
     public static final KeyPair generateElGamalKeyPair(ElGamalParameterSpec paramSpecs) throws Exception
     {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("ELGAMAL", "BC");

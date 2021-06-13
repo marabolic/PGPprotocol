@@ -13,6 +13,9 @@ public class MainForm {
     private JButton receiveButton;
     public JFrame frame;
 
+    /**
+     *
+     */
     public MainForm() {
         frame = new JFrame("PGP");
         frame.setContentPane(mainPanel);
@@ -60,10 +63,17 @@ public class MainForm {
         });
     }
 
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         MainForm mf = new MainForm();
     }
 
+    /**
+     *
+     */
     public void setVisibleMainForm(){
         frame.setVisible(true);
     }
