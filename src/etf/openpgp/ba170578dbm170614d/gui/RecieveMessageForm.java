@@ -25,7 +25,12 @@ public class RecieveMessageForm {
     private JFrame frame;
     private JFileChooser importEncryptedMessage;
 
-    void initComponents(JFrame MainFrame){
+
+    /**
+     *
+     * @param MainFrame
+     */
+    public void initComponents(JFrame MainFrame){
         frame = new JFrame("Recieve Message Form");
         frame.setContentPane(recieveMessageFormPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -64,10 +69,20 @@ public class RecieveMessageForm {
 
     }
 
-    RecieveMessageForm(JFrame MainFrame){
+
+    /**
+     *
+     * @param MainFrame
+     */
+    public RecieveMessageForm(JFrame MainFrame){
         initComponents(MainFrame);
     }
 
+
+    /**
+     *
+     * @return
+     */
     private String importEncryptedMessage() {
         importEncryptedMessage = new javax.swing.JFileChooser();
 

@@ -226,8 +226,9 @@ public class EncryptMessage {
 
     /**
      *
+     * @param o
      */
-    public static void ValidateMessage(){
+    public static void ValidateMessage(Object o){
 
     }
 

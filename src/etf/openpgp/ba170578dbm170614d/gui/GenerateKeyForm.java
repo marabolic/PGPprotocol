@@ -47,6 +47,10 @@ public class GenerateKeyForm {
         else return false;
     }
 
+    /**
+     *
+     * @param MainFrame
+     */
     void initComponents(JFrame MainFrame){
         frame = new JFrame("Generate Key Form");
         frame.setContentPane(generateKeyFormPanel);
