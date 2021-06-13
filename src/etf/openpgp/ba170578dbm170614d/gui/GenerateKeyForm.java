@@ -34,6 +34,11 @@ public class GenerateKeyForm {
 
     private static final String regex = "^(.+)@(.+)$";
 
+    /**
+     *
+     * @param email
+     * @return
+     */
     boolean ValidEmail(String email){
         Pattern pattern = Pattern.compile(regex);
 
@@ -140,10 +145,17 @@ public class GenerateKeyForm {
         });
     }
 
+    /**
+     *
+     * @param frame
+     */
     GenerateKeyForm(JFrame frame) {
         initComponents(frame);
     }
 
+    /**
+     *
+     */
     private void overviewKey(){
         publicKeyComboBox.removeAll();
         secretKeyComboBox.removeAll();
@@ -181,6 +193,12 @@ public class GenerateKeyForm {
 
     }
 
+    /**
+     *
+     * @param keyID
+     * @param password
+     * @return
+     */
     private boolean deleteKeys(String keyID,String password){
         PGPSecretKeyRing next = null;
         for (Iterator<PGPSecretKeyRing> iterator = GenerateKeys.pgpSecretKeyRing.iterator(); iterator.hasNext();) {

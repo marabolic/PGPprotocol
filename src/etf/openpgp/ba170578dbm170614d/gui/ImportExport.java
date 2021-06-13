@@ -26,6 +26,10 @@ public class ImportExport {
     private JFrame frame;
     private JFileChooser importKeys;
 
+    /**
+     *
+     * @param MainFrame
+     */
     public void init(JFrame MainFrame){
         frame = new JFrame("Import/Export");
         frame.setContentPane(importExport);
@@ -84,10 +88,18 @@ public class ImportExport {
         });
     }
 
+
+    /**
+     *
+     * @param MainFrame
+     */
     public ImportExport(JFrame MainFrame) {
         init(MainFrame);
     }
 
+    /**
+     *
+     */
     private void exportPublicKeysInComboBox() {
         publicKeyComboBox.removeAll();
         for (Iterator<PGPPublicKeyRing> iterator = GenerateKeys.pgpPublicKeyRing.iterator(); iterator.hasNext(); ) {
@@ -97,6 +109,9 @@ public class ImportExport {
         }
     }
 
+    /**
+     *
+     */
     private void exportSecretKeysInComboBox(){
         secretKeyComboBox.removeAll();
         for (Iterator<PGPSecretKeyRing> iterator = GenerateKeys.pgpSecretKeyRing.iterator(); iterator.hasNext();) {
@@ -106,6 +121,9 @@ public class ImportExport {
         }
     }
 
+    /**
+     *
+     */
     private void exportPublicKey() {
         ArmoredOutputStream exportPublicKeyFile = null;
 
@@ -137,6 +155,9 @@ public class ImportExport {
         JOptionPane.showMessageDialog(frame, "You exported public key.");
     }
 
+    /**
+     *
+     */
     private void exportSecretKey() {
         ArmoredOutputStream exportSecretKeyFile = null;
 
@@ -167,6 +188,9 @@ public class ImportExport {
         JOptionPane.showMessageDialog(frame, "You exported private key.");
     }
 
+    /**
+     *
+     */
     private void importPublicKey() {
         PGPPublicKey importedPublicKey = null;
         importKeys = new javax.swing.JFileChooser();
@@ -197,7 +221,9 @@ public class ImportExport {
         }
     }
 
-
+    /**
+     *
+     */
     private void importSecretKey() {
         PGPSecretKey importedSecretKey = null;
         importKeys = new javax.swing.JFileChooser();

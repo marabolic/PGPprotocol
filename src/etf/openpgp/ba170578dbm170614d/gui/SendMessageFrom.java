@@ -33,6 +33,10 @@ public class SendMessageFrom {
 
     private JFrame frame;
 
+    /**
+     *
+     * @param MainFrame
+     */
     void initComponent(JFrame MainFrame){
         frame = new JFrame("Generate Key Form");
         frame.setContentPane(sendMessageFormPanel);
@@ -68,66 +72,6 @@ public class SendMessageFrom {
         frame.setVisible(true);
 
         passwordField.setEnabled(false);
-
-        /*sendButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                char[] message = messageTextArea.getText().toCharArray();
-                byte [] messageInBytes = new byte[message.length];
-                for (int i = 0; i < message.length; i++){
-                    messageInBytes[i] = (byte) message[i];
-                }
-                if (message != null){
-                    if (signatureCheckBox.isSelected()){
-                        try {
-                            int index = privateKeySignatureBox.getSelectedIndex();
-                            //TODO: find selected private key for signature initialization
-                            int i = 0;
-                            PGPSecretKeyRing temp = null;
-                            for (Iterator<PGPSecretKeyRing> iterator = GenerateKeys.pgpSecretKeyRing.iterator(); iterator.hasNext(); ) {
-                                temp = iterator.next();
-                                if (i == index){
-                                    break;
-                                }
-                                i++;
-                            }
-                            //TODO: sign
-
-                            Signature signature = Signature.getInstance("DSA", "BC");
-                            PBESecretKeyDecryptor decryptor = new BcPBESecretKeyDecryptorBuilder(
-                                    new BcPGPDigestCalculatorProvider()).build(passwordField.getText().toCharArray());
-
-                            signature.initSign((PrivateKey) temp.getSecretKey().extractPrivateKey(decryptor), new SecureRandom());
-                            signature.update(messageInBytes);
-                            signature.sign();
-                        } catch (NoSuchAlgorithmException ex) {
-                            ex.printStackTrace();
-                        } catch (NoSuchProviderException ex) {
-                            ex.printStackTrace();
-                        } catch (SignatureException ex) {
-                            ex.printStackTrace();
-                        } catch (PGPException ex) {
-                            ex.printStackTrace();
-                        } catch (InvalidKeyException ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                    if (encriptionCheckBox.isSelected()){
-
-                    }
-                    if(compressionCheckBox.isSelected()){
-
-                    }
-                    if(conversionCheckBox.isSelected()){
-
-                    }
-                }
-
-                JOptionPane.showMessageDialog(frame, "Message sent successfully.");
-                frame.dispose();
-                MainFrame.setVisible(true);
-            }
-        });*/
 
         backButton.addActionListener(new ActionListener() {
             @Override
@@ -267,6 +211,11 @@ public class SendMessageFrom {
 
     }
 
+
+    /**
+     *
+     * @param MainFrame
+     */
     public SendMessageFrom(JFrame MainFrame){
         initComponent(MainFrame);
     }
