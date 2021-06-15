@@ -220,7 +220,7 @@ public class EncryptMessage {
      * @param passwd
      * @param o
      */
-    public static void DecryptMessage(char [] passwd, Object o){
+    public static void DecryptMessage(char [] passwd, Object o) {
 
     }
 
