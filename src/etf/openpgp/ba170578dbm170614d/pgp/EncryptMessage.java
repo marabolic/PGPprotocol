@@ -46,9 +46,14 @@ public class EncryptMessage {
             // obavezno mora
             Security.addProvider(new BouncyCastleProvider());
 
-            // ako smo cerkirali konverziju da je uradi
-            if (conversion)
-                encryptMessage = new ArmoredOutputStream(encryptMessage);
+            PGPCompressedDataGenerator commpressedDataGenerator = null;
+
+            // ako smo cerkirali konverziju
+            if (compression)
+                commpressedDataGenerator = new PGPCompressedDataGenerator(PGPCompressedData.ZIP);
+            else
+                commpressedDataGenerator = new PGPCompressedDataGenerator(PGPCompressedData.UNCOMPRESSED);
+
 
             // Simetricni algoritam za kriptovanje poruke
             BcPGPDataEncryptorBuilder dataEncryptor = null;
@@ -68,17 +73,17 @@ public class EncryptMessage {
             BcPublicKeyKeyEncryptionMethodGenerator bc = new BcPublicKeyKeyEncryptionMethodGenerator(publicKey);
             encryptedDataGenerator.addMethod(bc);
 
-            PGPCompressedDataGenerator commpressedDataGenerator = null;
 
-            // ako smo cerkirali konverziju
-            if (compression)
-                commpressedDataGenerator = new PGPCompressedDataGenerator(PGPCompressedData.ZIP);
-            else
-                commpressedDataGenerator = new PGPCompressedDataGenerator(PGPCompressedData.UNCOMPRESSED);
+            // ako smo cerkirali konverziju da je uradi
+            if (conversion)
+                encryptMessage = new ArmoredOutputStream(encryptMessage);
+
 
 
             ByteArrayOutputStream byteArrayOutStream = new ByteArrayOutputStream();
             PGPUtil.writeFileToLiteralData(commpressedDataGenerator.open(byteArrayOutStream), PGPLiteralData.BINARY, new File("messageForEncrypt.txt"));
+
+
 
             commpressedDataGenerator.close();
 
@@ -125,8 +130,12 @@ public class EncryptMessage {
             Security.addProvider(new BouncyCastleProvider());
             PGPEncryptedDataGenerator encryptedDataGenerator = null;
 
-
-
+            PGPCompressedDataGenerator commpressedDataGenerator = null;
+            // kompresija ako je cerkirana
+            if (compression)
+                commpressedDataGenerator = new PGPCompressedDataGenerator(PGPCompressedData.ZIP);
+            else
+                commpressedDataGenerator = new PGPCompressedDataGenerator(PGPCompressedData.UNCOMPRESSED);
 
             BcPGPDataEncryptorBuilder dataEncryptor = null;
             if (symetricAlg == 0) {
@@ -137,7 +146,7 @@ public class EncryptMessage {
 
             OutputStream outputCompress = null;
 
-            PGPCompressedDataGenerator commpressedDataGenerator = null;
+
 
             // ako smo naznacili enkripciju da samo uradimo integritet i enkriptovanje poruke sa javnim kljucem
             if (encryption) {
@@ -154,11 +163,7 @@ public class EncryptMessage {
                 encrOut = encryptedDataGenerator.open(encryptMessage, new byte[1 << 16]);
             }
 
-            // kompresija ako je cerkirana
-            if (compression)
-                commpressedDataGenerator = new PGPCompressedDataGenerator(PGPCompressedData.ZIP);
-            else
-                commpressedDataGenerator = new PGPCompressedDataGenerator(PGPCompressedData.UNCOMPRESSED);
+
 
             if (encryption) {
                 outputCompress = commpressedDataGenerator.open(encrOut, new byte[1 << 16]);

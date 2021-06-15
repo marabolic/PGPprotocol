@@ -161,8 +161,8 @@ public class GenerateKeyForm {
      *
      */
     private void overviewKey(){
-        publicKeyComboBox.removeAll();
-        secretKeyComboBox.removeAll();
+        publicKeyComboBox.removeAllItems();
+        secretKeyComboBox.removeAllItems();
         System.out.println("USAO SAM U OVER");
 
         if(GenerateKeys.pgpPublicKeyRing != null){
