@@ -123,6 +123,11 @@ public class EncryptMessage {
             myWriter.close();
 
             Security.addProvider(new BouncyCastleProvider());
+            PGPEncryptedDataGenerator encryptedDataGenerator = null;
+
+            // konverzija ako je cerkirana
+            if (conversion)
+                encryptMessage = new ArmoredOutputStream(encryptMessage);
 
             // konverzija ako je cerkirana
             if (conversion)
@@ -135,10 +140,24 @@ public class EncryptMessage {
                 dataEncryptor = new BcPGPDataEncryptorBuilder(PGPEncryptedData.AES_128);
             }
 
-            PGPEncryptedDataGenerator encryptedDataGenerator = null;
             OutputStream outputCompress = null;
 
             PGPCompressedDataGenerator commpressedDataGenerator = null;
+
+            // ako smo naznacili enkripciju da samo uradimo integritet i enkriptovanje poruke sa javnim kljucem
+            if (encryption) {
+                dataEncryptor.setWithIntegrityPacket(true);
+                dataEncryptor.setSecureRandom(new SecureRandom());
+
+                encryptedDataGenerator = new PGPEncryptedDataGenerator(dataEncryptor);
+
+                BcPublicKeyKeyEncryptionMethodGenerator bc = new BcPublicKeyKeyEncryptionMethodGenerator(publicKey);
+                encryptedDataGenerator.addMethod(bc);
+            }
+            OutputStream encrOut = null;
+            if(encryption){
+                encrOut = encryptedDataGenerator.open(encryptMessage, new byte[1 << 16]);
+            }
 
             // kompresija ako je cerkirana
             if (compression)
@@ -146,19 +165,9 @@ public class EncryptMessage {
             else
                 commpressedDataGenerator = new PGPCompressedDataGenerator(PGPCompressedData.UNCOMPRESSED);
 
-            // ako smo naznacili enkripciju da samo uradimo integritet i enkriptovanje poruke sa javnim kljucem
             if (encryption) {
-                encryptedDataGenerator = new PGPEncryptedDataGenerator(dataEncryptor);
-
-                dataEncryptor.setWithIntegrityPacket(true);
-                dataEncryptor.setSecureRandom(new SecureRandom());
-
-                BcPublicKeyKeyEncryptionMethodGenerator bc = new BcPublicKeyKeyEncryptionMethodGenerator(publicKey);
-                encryptedDataGenerator.addMethod(bc);
-
-
-                encryptMessage = encryptedDataGenerator.open(encryptMessage, new byte[1 << 16]);
-
+                outputCompress = commpressedDataGenerator.open(encrOut, new byte[1 << 16]);
+            }else{
                 outputCompress = commpressedDataGenerator.open(encryptMessage, new byte[1 << 16]);
             }
 
@@ -180,11 +189,11 @@ public class EncryptMessage {
             // ovo cita poruku i enkriptuje ga sa svim podesavanjima od gore bajt po bajt
             FileInputStream in = new FileInputStream("messageForEncrypt.txt");;
             try {
-                byte[] buf = new byte[1 << 16];
-                int len;
-                while ((len = in.read(buf)) > 0) {
-                    literalOut.write(buf, 0, len);
-                    signatureGenerator.update(buf, 0, len);
+                byte[] buffer = new byte[1 << 16];
+                int i;
+                while ((i = in.read(buffer)) > 0) {
+                    literalOut.write(buffer, 0, i);
+                    signatureGenerator.update(buffer, 0, i);
                 }
                 in.close();
                 literalDataGenerator.close();
@@ -202,7 +211,9 @@ public class EncryptMessage {
                 encryptedDataGenerator.close();
             }
 
-            encryptMessage.close();
+            if(conversion){
+                encryptMessage.close();
+            }
 
         } catch (FileNotFoundException e) {
             return false;
