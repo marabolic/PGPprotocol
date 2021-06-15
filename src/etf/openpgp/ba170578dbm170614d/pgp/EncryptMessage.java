@@ -125,13 +125,8 @@ public class EncryptMessage {
             Security.addProvider(new BouncyCastleProvider());
             PGPEncryptedDataGenerator encryptedDataGenerator = null;
 
-            // konverzija ako je cerkirana
-            if (conversion)
-                encryptMessage = new ArmoredOutputStream(encryptMessage);
 
-            // konverzija ako je cerkirana
-            if (conversion)
-                encryptMessage = new ArmoredOutputStream(encryptMessage);
+
 
             BcPGPDataEncryptorBuilder dataEncryptor = null;
             if (symetricAlg == 0) {
@@ -205,6 +200,10 @@ public class EncryptMessage {
             }
 
             signatureGenerator.generate().encode(outputCompress);
+
+            // konverzija ako je cerkirana
+            if (conversion)
+                encryptMessage = new ArmoredOutputStream(encryptMessage);
 
             commpressedDataGenerator.close();
             if (encryption) {
