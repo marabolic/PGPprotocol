@@ -79,10 +79,8 @@ public class EncryptMessage {
                 encryptMessage = new ArmoredOutputStream(encryptMessage);
 
 
-
             ByteArrayOutputStream byteArrayOutStream = new ByteArrayOutputStream();
             PGPUtil.writeFileToLiteralData(commpressedDataGenerator.open(byteArrayOutStream), PGPLiteralData.BINARY, new File("messageForEncrypt.txt"));
-
 
 
             commpressedDataGenerator.close();
